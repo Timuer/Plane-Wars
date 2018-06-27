@@ -107,6 +107,7 @@ var __main = function() {
         bullet: "img/bullet.png",
         bg: "img/bg.jpg",
     }
+    onDebugMode(true)
     var game = new Game(imgPaths)
     game.init()
 }

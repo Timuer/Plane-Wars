@@ -24,15 +24,15 @@ class Enemy extends AbstractTexture {
         super(game, image)
         this.x = Math.floor(Math.random() * 300)
         this.timeout = Math.random() * 1000 * 10
-        this.speedX = 2
-        this.speedY = 2
+        this.speed = config.enemy_speed
         this.direction = 1
     }
 
     update() {
         this.direction = (Math.random() * 2 - 1) > 0 ? 1 : -1
-        this.y += this.speedY;
-        this.x += this.speedX * this.direction
+        this.speed = config.enemy_speed
+        this.y += this.speed
+        this.x += this.speed * this.direction
     }
 }
 
@@ -41,8 +41,7 @@ class Player extends AbstractTexture {
         super(game, image)
         this.x = game.canvas.width / 2 - image.width / 2
         this.y = game.canvas.height - image.height
-        this.speedX = 5
-        this.speedY = 10
+        this.speed = config.player_speed
 
         var p = this
         game.registerAction("a", function(event) {
@@ -59,32 +58,35 @@ class Player extends AbstractTexture {
         })
     }
 
+    update() {
+        this.speed = config.player_speed
+    }
+
     moveLeft() {
-        this.x -= this.speedX
+        this.x -= this.speed
     }
 
     moveRight() {
-        this.x += this.speedX
+        this.x += this.speed
     }
 
     moveUp() {
-        this.y -= this.speedY
+        this.y -= this.speed
     }
 
     moveDown() {
-        this.y += this.speedY
+        this.y += this.speed
     }
 }
 
 class Bullet extends AbstractTexture {
     constructor(game, image) {
         super(game, image)
-        this.speedX = 0
-        this.speedY = 5
+        this.speed = config.bullet_speed
     }
 
     update() {
-        this.x += this.speedX
-        this.y -= this.speedY
+        this.speed = config.bullet_speed
+        this.y -= this.speed
     }
 }
