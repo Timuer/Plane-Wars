@@ -53,7 +53,7 @@ class Scene {
         }
     }
 
-    collisionCheck() {
+    collision() {
         var len = this.elements.length
         for (var i = 0; i < len; i++) {
             var b = this.elements[i]
@@ -64,21 +64,22 @@ class Scene {
                         && e instanceof Enemy
                         && e.y > 0
                         && this.__isSquareCollide(b.x, b.y, b.width, b.height, e.x, e.y, e.width, e.height)) {
-                        log("collided")
                         b.exists = false
                         e.exists = false
+                        this.explode(e.x + e.width / 2, e.y + e.height / 2)
                     }
                 }
             }
         }
     }
 
-    __isSquareCollide(x1, y1, w1, h1, x2, y2, w2, h2) {
-        var condition1 =  x1 + w1 > x2 && x1 + w1 < x2 + w2
-        var condition2 = x1 > x2 && x1 < x2 + w2
-        var condition3 = y1 > y2 && y1 < y2 + h2
-        var condition4 = y1 + h1 > y2 && y1 + h1 < y2
-        return (condition1 || condition2) && (condition3 || condition4)
+    explode(x, y) {
+        var images = []
+        for (var i = 0; i < 3; i++) {
+            images.push(this.game.imageByName("sparticle" + i))
+        }
+        var sp = new SparticleSystem(this.game, images, x, y)
+        this.addElement(sp)
     }
 
     updateBullets() {
@@ -99,8 +100,8 @@ class Scene {
             this.borderCheck(e)
         }
         this.updateBullets()
-        this.collisionCheck()
-        this.elements = this.elements.filter(e => e.exists)
+        this.collision()
+        this.__clear()
     }
 
     draw() {
@@ -110,5 +111,24 @@ class Scene {
             var elem = this.elements[i]
             elem.draw()
         }
+    }
+
+    __clear() {
+        for (var e of this.elements) {
+            if (e instanceof SparticleSystem) {
+                if (e.sparticles.length == 0) {
+                    e.exists = false
+                }
+            }
+        }
+        this.elements = this.elements.filter(e => e.exists)
+    }
+
+    __isSquareCollide(x1, y1, w1, h1, x2, y2, w2, h2) {
+        var condition1 =  x1 + w1 > x2 && x1 + w1 < x2 + w2
+        var condition2 = x1 > x2 && x1 < x2 + w2
+        var condition3 = y1 > y2 && y1 < y2 + h2
+        var condition4 = y1 + h1 > y2 && y1 + h1 < y2
+        return (condition1 || condition2) && (condition3 || condition4)
     }
 }

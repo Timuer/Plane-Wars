@@ -104,6 +104,9 @@ var __main = function() {
         player: "img/player.png",
         enemy: "img/enemy.png",
         bullet: "img/bullet.png",
+        sparticle0: "img/sparticle0.png",
+        sparticle1: "img/sparticle1.png",
+        sparticle2: "img/sparticle2.png",
         bg: "img/bg.jpg",
     }
     onDebugMode(true)

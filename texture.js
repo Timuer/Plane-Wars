@@ -23,7 +23,7 @@ class AbstractTexture {
 class Enemy extends AbstractTexture {
     constructor(game, image) {
         super(game, image)
-        this.x = Math.floor(Math.random() * game.canvas.width)
+        this.x = Math.floor(Math.random() * (game.canvas.width - this.width))
         this.speed = config.enemy_speed
         this.direction = (Math.random() * 2 - 1) > 0 ? 1 : -1
     }
@@ -90,5 +90,58 @@ class Bullet extends AbstractTexture {
     update() {
         this.speed = config.bullet_speed
         this.y -= this.speed
+    }
+}
+
+class Sparticle extends AbstractTexture {
+    constructor(game, image, x, y) {
+        super(game, image)
+        this.x = x
+        this.y = y
+        // X、Y坐标的速度初始值为-5~5的随机值
+        this.speedX = Math.random() * 10 -5
+        this.speedY = Math.random() * 10 -5
+        this.gravity = 5
+        this.life = 10
+    }
+
+    update() {
+        this.life -= 1
+        this.x += this.speedX
+        this.y += (this.speedY + this.gravity)
+    }
+}
+
+class SparticleSystem {
+    constructor(game, images, x, y) {
+        this.x = x
+        this.y = y
+        this.game = game
+        this.images = images
+        this.sparticles = []
+        this.num = config.sparticle_num
+        this.exists = true
+        this.init()
+    }
+
+    init() {
+        for (var i = 0; i < this.num; i++) {
+            var index = Math.floor(Math.random() * 3)
+            var sp = new Sparticle(this.game, this.images[index], this.x, this.y)
+            this.sparticles.push(sp)
+        }
+    }
+
+    update() {
+        for (var s of this.sparticles) {
+            s.update()
+        }
+        this.sparticles = this.sparticles.filter(s => s.life > 0)
+    }
+
+    draw() {
+        for (var s of this.sparticles) {
+            s.draw()
+        }
     }
 }
