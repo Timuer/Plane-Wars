@@ -6,6 +6,7 @@ class AbstractTexture {
         this.height = image.height
         this.game = game
         this.image = image
+        this.exists = true
     }
 
     draw() {
@@ -22,14 +23,12 @@ class AbstractTexture {
 class Enemy extends AbstractTexture {
     constructor(game, image) {
         super(game, image)
-        this.x = Math.floor(Math.random() * 300)
-        this.timeout = Math.random() * 1000 * 10
+        this.x = Math.floor(Math.random() * game.canvas.width)
         this.speed = config.enemy_speed
-        this.direction = 1
+        this.direction = (Math.random() * 2 - 1) > 0 ? 1 : -1
     }
 
     update() {
-        this.direction = (Math.random() * 2 - 1) > 0 ? 1 : -1
         this.speed = config.enemy_speed
         this.y += this.speed
         this.x += this.speed * this.direction
@@ -42,18 +41,21 @@ class Player extends AbstractTexture {
         this.x = game.canvas.width / 2 - image.width / 2
         this.y = game.canvas.height - image.height
         this.speed = config.player_speed
+        this.setupActions()
+    }
 
+    setupActions() {
         var p = this
-        game.registerAction("a", function(event) {
+        p.game.registerAction("a", function(event) {
             p.moveLeft()
         })
-        game.registerAction("d", function(event) {
+        p.game.registerAction("d", function(event) {
             p.moveRight()
         })
-        game.registerAction("w", function(event) {
+        p.game.registerAction("w", function(event) {
             p.moveUp()
         })
-        game.registerAction("s", function(event) {
+        p.game.registerAction("s", function(event) {
             p.moveDown()
         })
     }

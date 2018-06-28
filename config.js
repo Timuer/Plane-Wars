@@ -3,6 +3,7 @@ var log = console.log.bind(console)
 const config = {
     bullet_speed: 5,
     enemy_speed: 2,
+    enemy_count: 10,
     player_speed: 5,
 }
 

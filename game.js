@@ -66,12 +66,11 @@ class Game {
     }
 
     runLoop() {
-        this.performActions()
-        this.update()
-        this.clearCanvas()
-        this.draw()
-
         var g = this
+        g.performActions()
+        g.update()
+        g.clearCanvas()
+        g.draw()
         setTimeout(function () {
             g.runLoop()
         }, 1000/window.fps)
