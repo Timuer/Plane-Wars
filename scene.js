@@ -1,8 +1,51 @@
 class Scene {
     constructor(game) {
         this.game = game
+        this.sceneName = ""
         this.elements = []
         this.init()
+    }
+
+    static new(game, sceneName) {
+        if (new.target == sceneName)
+        return new this(game)
+    }
+
+    init() {
+
+    }
+
+    addElement(elem) {
+        this.elements.push(elem)
+    }
+
+    update() {
+        for (var e of this.elements) {
+            e.update()
+        }
+    }
+
+    drawBackground() {
+        var bg = this.game.imageByName("bg")
+        this.game.drawImage(bg)
+    }
+
+    draw() {
+        this.drawBackground()
+        for (var e of this.elements) {
+            e.draw()
+        }
+    }
+
+    clear() {
+        this.elements = this.elements.filter(e => e.exists)
+    }
+}
+
+class GameScene extends Scene {
+    constructor(game) {
+        super(game)
+        this.sceneName = "game"
     }
 
     init() {
@@ -17,10 +60,6 @@ class Scene {
         this.addElement(this.player)
         this.bulletCoolDownTime = 10
         this.bulletCoolDown = this.bulletCoolDownTime
-    }
-
-    addElement(elem) {
-        this.elements.push(elem)
     }
 
     borderCheck(elem) {
@@ -62,8 +101,8 @@ class Scene {
                     var e = this.elements[j]
                     if (j != i
                         && e instanceof Enemy
-                        && e.y > 0
-                        && this.__isSquareCollide(b.x, b.y, b.width, b.height, e.x, e.y, e.width, e.height)) {
+                        && e.y + e.height > 0
+                        && this.isSquareCollide(b.x, b.y, b.width, b.height, e.x, e.y, e.width, e.height)) {
                         b.exists = false
                         e.exists = false
                         this.explode(e.x + e.width / 2, e.y + e.height / 2)
@@ -94,26 +133,7 @@ class Scene {
         }
     }
 
-    update() {
-        for (let e of this.elements) {
-            e.update()
-            this.borderCheck(e)
-        }
-        this.updateBullets()
-        this.collision()
-        this.__clear()
-    }
-
-    draw() {
-        var bg = this.game.imageByName("bg")
-        this.game.drawImage(bg)
-        for (var i = 0; i < this.elements.length; i++) {
-            var elem = this.elements[i]
-            elem.draw()
-        }
-    }
-
-    __clear() {
+    updateSparticles() {
         for (var e of this.elements) {
             if (e instanceof SparticleSystem) {
                 if (e.sparticles.length == 0) {
@@ -121,14 +141,50 @@ class Scene {
                 }
             }
         }
-        this.elements = this.elements.filter(e => e.exists)
     }
 
-    __isSquareCollide(x1, y1, w1, h1, x2, y2, w2, h2) {
+    update() {
+        for (let e of this.elements) {
+            e.update()
+            this.borderCheck(e)
+        }
+        this.updateBullets()
+        this.updateSparticles()
+        this.collision()
+        this.clear()
+    }
+
+    isSquareCollide(x1, y1, w1, h1, x2, y2, w2, h2) {
         var condition1 =  x1 + w1 > x2 && x1 + w1 < x2 + w2
         var condition2 = x1 > x2 && x1 < x2 + w2
         var condition3 = y1 > y2 && y1 < y2 + h2
         var condition4 = y1 + h1 > y2 && y1 + h1 < y2
         return (condition1 || condition2) && (condition3 || condition4)
+    }
+}
+
+class StartScene extends Scene {
+    constructor(game) {
+        super(game)
+        this.sceneName = "start"
+    }
+
+    init() {
+        this.startBtn = this.game.imageByName("startButton")
+        this.startBtn.x = this.game.canvas.width / 2 - this.startBtn.width / 2
+        this.startBtn.y = this.game.canvas.height / 2 - this.startBtn.height / 2
+        this.setupActions()
+    }
+
+    setupActions() {
+        var s = this
+        s.game.canvas.addEventListener("click", function() {
+            s.game.currentScene = "game"
+        })
+    }
+
+    draw() {
+        super.draw()
+        this.game.drawImage(this.startBtn)
     }
 }

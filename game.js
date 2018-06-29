@@ -8,6 +8,11 @@ class Game {
         this.keydowns = {}
         this.actions = {}
         this.scene = null
+        this.scenes = {
+            "start": StartScene,
+            "game": GameScene,
+        }
+        this.currentScene = "start"
 
         var g = this
         window.addEventListener("keydown", function(event) {
@@ -20,6 +25,16 @@ class Game {
 
     registerAction(key, callback) {
         this.actions[key] = callback
+    }
+
+    performActions() {
+        var keys = Object.keys(this.actions)
+        for (var i = 0; i < keys.length; i++) {
+            var k = keys[i]
+            if (this.keydowns[k]) {
+                this.actions[k]()
+            }
+        }
     }
 
     drawImage(image) {
@@ -55,16 +70,6 @@ class Game {
         }
     }
 
-    performActions() {
-        var keys = Object.keys(this.actions)
-        for (var i = 0; i < keys.length; i++) {
-            var k = keys[i]
-            if (this.keydowns[k]) {
-                this.actions[k]()
-            }
-        }
-    }
-
     runLoop() {
         var g = this
         g.performActions()
@@ -77,6 +82,9 @@ class Game {
     }
 
     update() {
+        if (this.scene.sceneName != this.currentScene) {
+            this.scene = this.scenes[this.currentScene].new(this)
+        }
         this.scene.update()
     }
 
@@ -89,7 +97,7 @@ class Game {
     }
 
     __start() {
-        var scene = new Scene(this)
+        var scene = new StartScene(this)
         this.scene = scene
 
         var g = this
@@ -108,6 +116,7 @@ var __main = function() {
         sparticle1: "img/sparticle1.png",
         sparticle2: "img/sparticle2.png",
         bg: "img/bg.jpg",
+        startButton: "img/start.png",
     }
     onDebugMode(true)
     var game = new Game(imgPaths)
