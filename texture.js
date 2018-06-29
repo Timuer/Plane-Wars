@@ -23,7 +23,7 @@ class AbstractTexture {
 class Enemy extends AbstractTexture {
     constructor(game, image) {
         super(game, image)
-        this.x = Math.floor(Math.random() * (game.canvas.width - this.width))
+        this.x = rangeBetween(0, game.canvas.width - this.width)
         this.speed = config.enemy_speed
         this.direction = (Math.random() * 2 - 1) > 0 ? 1 : -1
     }
@@ -99,8 +99,8 @@ class Sparticle extends AbstractTexture {
         this.x = x
         this.y = y
         // X、Y坐标的速度初始值为-5~5的随机值
-        this.speedX = Math.random() * 10 -5
-        this.speedY = Math.random() * 10 -5
+        this.speedX = rangeBetween(-5, 6)
+        this.speedY = rangeBetween(-5, 6)
         this.gravity = 5
         this.life = 10
     }
@@ -126,7 +126,7 @@ class SparticleSystem {
 
     init() {
         for (var i = 0; i < this.num; i++) {
-            var index = Math.floor(Math.random() * 3)
+            var index = rangeBetween(0, 3)
             var sp = new Sparticle(this.game, this.images[index], this.x, this.y)
             this.sparticles.push(sp)
         }

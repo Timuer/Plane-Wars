@@ -6,8 +6,7 @@ class Scene {
         this.init()
     }
 
-    static new(game, sceneName) {
-        if (new.target == sceneName)
+    static new(game) {
         return new this(game)
     }
 
@@ -52,7 +51,7 @@ class GameScene extends Scene {
         var enemyCount = config.enemy_count
         var yRange = enemyCount * 100
         for (var i = 0; i < enemyCount; i++) {
-            var e = new Enemy(this.game, this.game.imageByName("enemy"))
+            var e = new Enemy(this.game, this.game.imageByName("enemy" + rangeBetween(0, 5)))
             e.y = Math.random() * yRange * (-1)
             this.addElement(e)
         }
@@ -110,6 +109,13 @@ class GameScene extends Scene {
                 }
             }
         }
+        var p = this.player
+        for (var e of this.elements) {
+            if (e instanceof Enemy
+                && this.isSquareCollide(p.x, p.y, p.width, p.height, e.x, e.y, e.width, e.height)) {
+                this.game.currentScene = "interface"
+            }
+        }
     }
 
     explode(x, y) {
@@ -163,10 +169,10 @@ class GameScene extends Scene {
     }
 }
 
-class StartScene extends Scene {
+class InterfaceScene extends Scene {
     constructor(game) {
         super(game)
-        this.sceneName = "start"
+        this.sceneName = "interface"
     }
 
     init() {

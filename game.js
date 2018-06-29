@@ -9,10 +9,10 @@ class Game {
         this.actions = {}
         this.scene = null
         this.scenes = {
-            "start": StartScene,
+            "interface": InterfaceScene,
             "game": GameScene,
         }
-        this.currentScene = "start"
+        this.currentScene = "interface"
 
         var g = this
         window.addEventListener("keydown", function(event) {
@@ -97,7 +97,7 @@ class Game {
     }
 
     __start() {
-        var scene = new StartScene(this)
+        var scene = new InterfaceScene(this)
         this.scene = scene
 
         var g = this
@@ -110,7 +110,11 @@ class Game {
 var __main = function() {
     imgPaths = {
         player: "img/player.png",
-        enemy: "img/enemy.png",
+        enemy0: "img/enemy0.png",
+        enemy1: "img/enemy1.png",
+        enemy2: "img/enemy2.png",
+        enemy3: "img/enemy3.png",
+        enemy4: "img/enemy4.png",
         bullet: "img/bullet.png",
         sparticle0: "img/sparticle0.png",
         sparticle1: "img/sparticle1.png",
