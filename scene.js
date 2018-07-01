@@ -161,11 +161,11 @@ class GameScene extends Scene {
     }
 
     isSquareCollide(x1, y1, w1, h1, x2, y2, w2, h2) {
-        var condition1 =  x1 + w1 > x2 && x1 + w1 < x2 + w2
-        var condition2 = x1 > x2 && x1 < x2 + w2
-        var condition3 = y1 > y2 && y1 < y2 + h2
-        var condition4 = y1 + h1 > y2 && y1 + h1 < y2
-        return (condition1 || condition2) && (condition3 || condition4)
+        var minX = x1 <= x2 ? x1 : x2
+        var maxX = x1 + w1 <= x2 + w2 ? x2 + w2 : x1 + w1
+        var minY = y1 <= y2 ? y1 : y2
+        var maxY = y1 + h1 <= y2 + h2 ? y2 + h2 : y1 + h1
+        return (maxX - minX <= w1 + w2) && (maxY - minY <= h1 + h2)
     }
 }
 
